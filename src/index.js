@@ -1,15 +1,14 @@
 import { ApolloServer } from 'apollo-server';
+import * as dotenv from 'dotenv';
 import typeDefs from './schemas/typeDefs.js';
 import resolvers from './resolvers/Query.js';
-import mongoose from 'mongoose';
+import connectDb from '../config/db.js';
 
-// Configuración de la conexión a MongoDB
-const MONGO_URI = 'mongodb+srv://juan:YVQxTHOLdh7cFJ8O@caikei.i4nc3u3.mongodb.net/'; 
+dotenv.config();
+const port = process.env.PORT || 8080;
 
-mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('🔗 Conectado a MongoDB'))
-  .catch(err => console.error('Error conectando a MongoDB:', err));
-
+// Set config file to Mongo
+connectDb();
 
 const server = new ApolloServer({
   typeDefs,
