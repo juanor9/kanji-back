@@ -20,7 +20,7 @@ const resolvers = {
         return [];
       }
     },
-    getCharacterByLiteral: async (_, { literal }) => { // Nueva función resolver
+    getCharacterByLiteral: async (_, { literal }) => {
       try {
         const characters = await Character.find({ "literal": literal });
         return characters;
