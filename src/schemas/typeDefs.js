@@ -67,6 +67,7 @@ const typeDefs = gql`
   type Query {
     getCharacterById(id: ID!): Character
     getAllCharacters: [Character]
+    getCharacterByLiteral(literal: String!): [Character]
   }
 
   # Mutation definitions
