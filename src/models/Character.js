@@ -3,63 +3,64 @@ import mongoose from 'mongoose';
 const { Schema, model } = mongoose;
 
 const codepointSchema = new Schema({
-    cp_value: String,
-    cp_type: String
-});
-
-const radicalValueSchema = new Schema({
+    cp_value: [{ value: String, cp_type: String }]
+  });
+  
+  const radicalSchema = new Schema({
+    rad_value: [{ value: String, rad_type: String }]
+  });
+  
+  const variantSchema = new Schema({
     value: String,
-    rad_type: String
-});
-
-const radicalSchema = new Schema({
-    rad_value: [radicalValueSchema]
-});
-
-const miscSchema = new Schema({
+    var_type: String
+  });
+  
+  const miscSchema = new Schema({
+    stroke_count: [String],
     grade: String,
-    stroke_count: Number,
-    variant: String,
-    freq: Number,
-    jlpt: String
-});
-
-const dicRefSchema = new Schema({
+    freq: String,
+    jlpt: String,
+    variant: [variantSchema]
+  });
+  
+  const dicRefSchema = new Schema({
     value: String,
     dr_type: String,
     m_vol: String,
     m_page: String
-});
-
-const queryCodeSchema = new Schema({
-    q_code: String,
+  });
+  
+  const qCodeSchema = new Schema({
+    value: String,
     qc_type: String
-});
-
-const readingSchema = new Schema({
+  });
+  
+  const readingSchema = new Schema({
     value: String,
     r_type: String
-});
-
-const meaningSchema = new Schema({
-    text: String,
-    m_lang: String
-});
-
-const readingMeaningSchema = new Schema({
+  });
+  
+  const rmGroupSchema = new Schema({
     reading: [readingSchema],
-    meaning: [meaningSchema]
-});
-
-const characterSchema = new Schema({
+    meaning: [String],
+    nanori: [String]  // Agregar el campo `nanori`
+  });
+  
+  const kanjiSchema = new Schema({
+    _id: Schema.Types.ObjectId,
     literal: [String],
     codepoint: [codepointSchema],
     radical: [radicalSchema],
-    misc: miscSchema,
-    dic_number: [dicRefSchema],
-    query_code: [queryCodeSchema],
-    reading_meaning: readingMeaningSchema,
-    nanori: [String]
-});
+    misc: [miscSchema],
+    dic_number: [{
+      dic_ref: [dicRefSchema]
+    }],
+    query_code: [{
+      q_code: [qCodeSchema]
+    }],
+    reading_meaning: [{
+      rmgroup: [rmGroupSchema]
+    }]
+  });
 
-export default model('Character', characterSchema);
+export default model('Character', kanjiSchema, 'kanjidic');
