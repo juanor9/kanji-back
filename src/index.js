@@ -1,4 +1,5 @@
 import { ApolloServer } from 'apollo-server';
+// import { ApolloServerPluginLandingPageDisabled } from 'apollo-server-core';
 import * as dotenv from 'dotenv';
 import typeDefs from './schemas/typeDefs.js';
 import resolvers from './resolvers/Query.js';
@@ -12,7 +13,8 @@ connectDb();
 
 const server = new ApolloServer({
   typeDefs,
-  resolvers
+  resolvers,
+  // plugins: [ApolloServerPluginLandingPageDisabled()],
 });
 
 server.listen(port).then(({ url }) => {
