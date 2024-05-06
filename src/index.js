@@ -15,6 +15,7 @@ const server = new ApolloServer({
   resolvers
 });
 
-server.listen().then(({ url }) => {
-  console.log(`🚀 Server ready at ${url}`);
+server.listen(port).then(({ url }) => {
+  const publicUrl = process.env.PUBLIC_URL || url;
+  console.log(`🚀 Server ready at ${publicUrl}`);
 });
