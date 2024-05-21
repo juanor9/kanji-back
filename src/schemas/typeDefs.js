@@ -1,84 +1,57 @@
-import { gql } from 'apollo-server';
+import mongoose from 'mongoose';
 
-const typeDefs = gql`
-  # Definiciones de tipos para GraphQL
-  type Codepoint {
-    cp_value: String
-    cp_type: String
-  }
+const { Schema, model } = mongoose;
 
-  type RadicalValue {
-    value: String
-    rad_type: String
-  }
+const radicalSchema = new Schema({
+  radType: String,
+  code: String,
+}, { _id: false });
 
-  type Radical {
-    rad_value: [RadicalValue]
-  }
+const readingSchema = new Schema({
+  kunyomi: [String],
+  onyomi: [String],
+  nanori: [String],
+}, { _id: false });
 
-  type Misc {
-    grade: String
-    stroke_count: Int
-    variant: String
-    freq: Int
-    jlpt: String
-  }
+const meaningSchema = new Schema({
+  language: String,
+  meaning: String,
+}, { _id: false });
 
-  type DicRef {
-    value: String
-    dr_type: String
-    m_vol: String
-    m_page: String
-  }
+const variantSchema = new Schema({
+  varType: String,
+  varCode: String,
+}, { _id: false });
 
-  type QueryCode {
-    q_code: String
-    qc_type: String
-  }
+const dictionarySchema = new Schema({
+  dictionaryName: String,
+  code: String,
+}, { _id: false });
 
-  type Reading {
-    value: String
-    r_type: String
-  }
+const queryCodeSchema = new Schema({
+  queryType: String,
+  qCode: String,
+}, { _id: false });
 
-  type Meaning {
-    text: String
-    m_lang: String
-  }
+const codepointSchema = new Schema({
+  cpType: String,
+  code: String,
+}, { _id: false });
 
-  type ReadingMeaning {
-    reading: [Reading]
-    meaning: [Meaning]
-  }
+const kanjiSchema = new Schema({
+  _id: Schema.Types.ObjectId,
+  literal: String,
+  radicals: [radicalSchema],
+  readings: readingSchema,
+  meanings: [meaningSchema],
+  grade: Number,
+  strokes: [Number],
+  jlpt: Number,
+  freq: Number,
+  variant: [variantSchema],
+  dictionaries: [dictionarySchema],
+  queryCodes: [queryCodeSchema],
+  codepoints: [codepointSchema],
+}, { collection: 'kanjidic' });
 
-  type Character {
-    id: ID
-    literal: [String]
-    codepoint: [Codepoint]
-    radical: [Radical]
-    misc: Misc
-    dic_number: [DicRef]
-    query_code: [QueryCode]
-    reading_meaning: ReadingMeaning
-    nanori: [String]
-  }
-
-  # Query definitions
-  type Query {
-    getCharacterById(id: ID!): Character
-    getAllCharacters: [Character]
-  }
-
-  # Mutation definitions
-  type Mutation {
-    addCharacter(character: CharacterInput): Character
-  }
-
-  # Input types for mutations
-  input CharacterInput {
-    literal: [String]
-    # Other fields can be added here
-  }
-`;
-
-export default typeDefs;
+export default model('Character', kanjiSchema);
