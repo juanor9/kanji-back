@@ -1,5 +1,4 @@
 import { ApolloServer } from 'apollo-server';
-// import { ApolloServerPluginLandingPageDisabled } from 'apollo-server-core';
 import * as dotenv from 'dotenv';
 import typeDefs from './schemas/typeDefs.js';
 import resolvers from './resolvers/Query.js';

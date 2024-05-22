@@ -55,8 +55,7 @@ const typeDefs = gql`
 
   type Query {
     getCharacterById(id: ID!): Character
-    entries: [Character]
-
+    getAllCharacters: [Character]
   }
 `;
 
