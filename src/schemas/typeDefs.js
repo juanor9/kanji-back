@@ -1,57 +1,62 @@
-import mongoose from 'mongoose';
+import { gql } from 'apollo-server';
 
-const { Schema, model } = mongoose;
+const typeDefs = gql`
+  type Radical {
+    radType: String
+    code: String
+  }
 
-const radicalSchema = new Schema({
-  radType: String,
-  code: String,
-}, { _id: false });
+  type Reading {
+    kunyomi: [String]
+    onyomi: [String]
+    nanori: [String]
+  }
 
-const readingSchema = new Schema({
-  kunyomi: [String],
-  onyomi: [String],
-  nanori: [String],
-}, { _id: false });
+  type Meaning {
+    language: String
+    meaning: String
+  }
 
-const meaningSchema = new Schema({
-  language: String,
-  meaning: String,
-}, { _id: false });
+  type Variant {
+    varType: String
+    varCode: String
+  }
 
-const variantSchema = new Schema({
-  varType: String,
-  varCode: String,
-}, { _id: false });
+  type Dictionary {
+    dictionaryName: String
+    code: String
+  }
 
-const dictionarySchema = new Schema({
-  dictionaryName: String,
-  code: String,
-}, { _id: false });
+  type QueryCode {
+    queryType: String
+    qCode: String
+  }
 
-const queryCodeSchema = new Schema({
-  queryType: String,
-  qCode: String,
-}, { _id: false });
+  type Codepoint {
+    cpType: String
+    code: String
+  }
 
-const codepointSchema = new Schema({
-  cpType: String,
-  code: String,
-}, { _id: false });
+  type Character {
+    _id: ID
+    literal: String
+    radicals: [Radical]
+    readings: Reading
+    meanings: [Meaning]
+    grade: Int
+    strokes: [Int]
+    jlpt: Int
+    freq: Int
+    variant: [Variant]
+    dictionaries: [Dictionary]
+    queryCodes: [QueryCode]
+    codepoints: [Codepoint]
+  }
 
-const kanjiSchema = new Schema({
-  _id: Schema.Types.ObjectId,
-  literal: String,
-  radicals: [radicalSchema],
-  readings: readingSchema,
-  meanings: [meaningSchema],
-  grade: Number,
-  strokes: [Number],
-  jlpt: Number,
-  freq: Number,
-  variant: [variantSchema],
-  dictionaries: [dictionarySchema],
-  queryCodes: [queryCodeSchema],
-  codepoints: [codepointSchema],
-}, { collection: 'kanjidic' });
+  type Query {
+    getCharacterById(id: ID!): Character
+    entries: [Character]
+  }
+`;
 
-export default model('Character', kanjiSchema);
+export default typeDefs;
