@@ -7,14 +7,21 @@ import connectDb from '../config/db.js';
 dotenv.config();
 const port = process.env.PORT || 8080;
 
-// Set config file to Mongo
-connectDb();
+// Conectar a MongoDB
+connectDb().then(() => {
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    formatError: (err) => {
+      // Customize error message
+      console.error(err);
+      return err;
+    },
+  });
 
-const server = new ApolloServer({
-  typeDefs,
-  resolvers
-});
-
-server.listen().then(({ url }) => {
-  console.log(`🚀 Server ready at ${url}`);
+  server.listen({ port }).then(({ url }) => {
+    console.log(`🚀 Server ready at ${url}`);
+  });
+}).catch(error => {
+  console.error('Error connecting to the database', error);
 });

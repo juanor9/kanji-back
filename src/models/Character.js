@@ -1,66 +1,57 @@
 import mongoose from 'mongoose';
-
 const { Schema, model } = mongoose;
 
-const codepointSchema = new Schema({
-    cp_value: [{ value: String, cp_type: String }]
-  });
-  
-  const radicalSchema = new Schema({
-    rad_value: [{ value: String, rad_type: String }]
-  });
-  
-  const variantSchema = new Schema({
-    value: String,
-    var_type: String
-  });
-  
-  const miscSchema = new Schema({
-    stroke_count: [String],
-    grade: String,
-    freq: String,
-    jlpt: String,
-    variant: [variantSchema]
-  });
-  
-  const dicRefSchema = new Schema({
-    value: String,
-    dr_type: String,
-    m_vol: String,
-    m_page: String
-  });
-  
-  const qCodeSchema = new Schema({
-    value: String,
-    qc_type: String
-  });
-  
-  const readingSchema = new Schema({
-    value: String,
-    r_type: String
-  });
-  
-  const rmGroupSchema = new Schema({
-    reading: [readingSchema],
-    meaning: [String],
-    nanori: [String]  // Agregar el campo `nanori`
-  });
-  
-  const kanjiSchema = new Schema({
-    _id: Schema.Types.ObjectId,
-    literal: [String],
-    codepoint: [codepointSchema],
-    radical: [radicalSchema],
-    misc: [miscSchema],
-    dic_number: [{
-      dic_ref: [dicRefSchema]
-    }],
-    query_code: [{
-      q_code: [qCodeSchema]
-    }],
-    reading_meaning: [{
-      rmgroup: [rmGroupSchema]
-    }]
-  });
+const RadicalSchema = new Schema({
+  radType: String,
+  code: String
+});
 
-export default model('Character', kanjiSchema, 'kanjidic');
+const ReadingSchema = new Schema({
+  kunyomi: [String],
+  onyomi: [String],
+  nanori: [String]
+});
+
+const MeaningSchema = new Schema({
+  language: String,
+  meaning: String
+});
+
+const VariantSchema = new Schema({
+  varType: String,
+  varCode: String
+});
+
+const DictionarySchema = new Schema({
+  dictionaryName: String,
+  code: String
+});
+
+const QueryCodeSchema = new Schema({
+  queryType: String,
+  qCode: String
+});
+
+const CodepointSchema = new Schema({
+  cpType: String,
+  code: String
+});
+
+const KanjiSchema = new Schema({
+  literal: { type: String, required: true },
+  radicals: [RadicalSchema],
+  readings: ReadingSchema,
+  meanings: [MeaningSchema],
+  grade: Number,
+  strokes: [Number],
+  jlpt: Number,
+  freq: Number,
+  variant: [VariantSchema],
+  dictionaries: [DictionarySchema],
+  queryCodes: [QueryCodeSchema],
+  codepoints: [CodepointSchema]
+});
+
+const Character = model('Character', KanjiSchema, 'kanjidic');
+
+export default Character;
