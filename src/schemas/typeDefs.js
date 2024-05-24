@@ -56,6 +56,7 @@ const typeDefs = gql`
   type Query {
     getCharacterById(id: ID!): Character
     getAllCharacters: [Character]
+    getRandomCharacter: Character
   }
 `;
 
