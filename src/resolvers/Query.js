@@ -25,14 +25,20 @@ const resolvers = {
         throw new Error('Error fetching all characters');
       }
     },
-    getRandomCharacter: async () => {
+    getRandomCharacter: async (_, {jlpt}) => {
       try {
-        const count = await Character.countDocuments();
+        console.log('jplt', jlpt);
+        const filter = {};
+        if (jlpt !== undefined) {
+          filter.jlpt = jlpt;
+        }
+
+        const count = await Character.countDocuments(filter);
         if (!count || count <= 0){
-          throw new Error('Error getting all characters');
+          throw new Error('No characters found with the specified filter');
         }
         const random = Math.floor(Math.random() * count);
-        const character = await Character.findOne().skip(random);
+        const character = await Character.findOne(filter).skip(random);
         return character;
       } catch (error) {
         console.error("Error en getRandomCharacter:", error);
