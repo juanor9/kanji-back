@@ -57,6 +57,7 @@ const typeDefs = gql`
     getCharacterById(id: ID!): Character
     getAllCharacters: [Character]
     getRandomCharacter(jlpt: Int): Character
+    getCharacterByLiteral(literal: String): Character
   }
 `;
 

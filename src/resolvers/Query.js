@@ -44,6 +44,24 @@ const resolvers = {
         console.error("Error en getRandomCharacter:", error);
         throw new Error('Error fetching random character');
       }
+    },
+    // Resolver para obtener un kanji por su literal
+    getCharacterByLiteral: async (_, { literal }) => {
+      try {
+        console.log('kanji: ', literal);
+        const filter = {};
+        if (literal !== undefined) {
+          filter.literal = literal;
+        }
+        const character = await Character.findOne(filter);
+        if (!character) {
+          throw new Error('Character not found');
+        }
+        return character;
+      } catch (error) {
+        console.error("Error en getCharacterByLiteral:", error);
+        throw new Error('Error fetching character by literal');
+      }
     }
   }
 };
