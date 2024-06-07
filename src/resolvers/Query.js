@@ -27,7 +27,6 @@ const resolvers = {
     },
     getRandomCharacter: async (_, {jlpt}) => {
       try {
-        console.log('jplt', jlpt);
         const filter = {};
         if (jlpt !== undefined) {
           filter.jlpt = jlpt;
