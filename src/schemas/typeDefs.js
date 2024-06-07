@@ -1,4 +1,4 @@
-import { gql } from 'apollo-server';
+import { gql } from "apollo-server";
 
 const typeDefs = gql`
   type Radical {
@@ -52,12 +52,41 @@ const typeDefs = gql`
     queryCodes: [QueryCode]
     codepoints: [Codepoint]
   }
+  type DictMeaning {
+    language: String
+    word: String
+  }
+
+  type Meanings {
+    partOfSpeech: [String]
+    meaning: [DictMeaning]
+  }
+
+  type Kana {
+    reading: String
+  }
+
+  type DictKanji {
+    writing: String
+  }
+
+  type Entry {
+    _id: ID
+    id: Int
+    kana: [Kana]
+    kanji: [DictKanji]
+    meanings: [Meanings]
+  }
 
   type Query {
     getCharacterById(id: ID!): Character
     getAllCharacters: [Character]
     getRandomCharacter(jlpt: Int): Character
     getCharacterByLiteral(literal: String): Character
+
+    getEntryById(id: Int!): Entry
+    getAllEntries: [Entry]
+    getEntriesByKanjiWriting(writing: String!): [Entry]
   }
 `;
 

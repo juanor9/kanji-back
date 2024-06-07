@@ -1,4 +1,5 @@
 import Character from "../models/Character.js";
+import Entry from "../models/Word.js";
 
 const resolvers = {
   Query: {
@@ -61,7 +62,48 @@ const resolvers = {
         console.error("Error en getCharacterByLiteral:", error);
         throw new Error('Error fetching character by literal');
       }
-    }
+    },
+    // Resolver para obtener todas las entradas del diccionario
+    getAllEntries: async () => {
+      try {
+        const entries = await Entry.find();
+        return entries;
+      } catch (error) {
+        console.error("Error en getAllEntries:", error);
+        throw new Error('Error fetching all entries');
+      }
+    },
+    // Resolver para obtener una entrada del diccionario por su id
+    getEntryById: async (_, { id }) => {
+      try {
+        const filter = {};
+        if (id !== undefined) {
+          filter.id = id;
+        }
+        const entry = await Entry.findOne(filter);
+        if (!entry) {
+          throw new Error('Entry not found');
+        }
+        return entry;
+      } catch (error) {
+        console.error("Error en getEntryById:", error);
+        throw new Error('Error fetching entry by id');
+      }
+    },
+    // Resolver para obtener todas las entradas que usan un kanji
+    getEntriesByKanjiWriting: async (_, { writing  }) => {
+      try {
+        
+        const entries = await Entry.find({ 'kanji.writing': { $regex: writing, $options: 'i' } });;
+        if (!entries) {
+          throw new Error('Entries not found');
+        }
+        return entries;
+      } catch (error) {
+        console.error("Error en getEntriesByKanjiWriting:", error);
+        throw new Error('Error fetching entries by kanji');
+      }
+    },
   }
 };
 
