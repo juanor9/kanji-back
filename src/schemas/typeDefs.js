@@ -86,7 +86,7 @@ const typeDefs = gql`
 
     getEntryById(id: Int!): Entry
     getAllEntries: [Entry]
-    getEntriesByKanjiWriting(writing: String!): [Entry]
+    getEntriesByKanjiWriting(writing: String!, language: String): [Entry]
   }
 `;
 

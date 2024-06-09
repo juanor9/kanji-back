@@ -91,57 +91,78 @@ const resolvers = {
       }
     },
     // Resolver para obtener todas las entradas que usan un kanji
-    getEntriesByKanjiWriting: async (_, { writing }) => {
+    getEntriesByKanjiWriting: async (_, { writing, language }) => {
+
       try {
         const entries = await Entry.find({
           "kanji.writing": { $regex: writing, $options: "i" },
         });
-
+    
         if (entries.length === 0) {
           throw new Error("Entries not found");
         }
+    
         // Encontrar escritura que contenga el kanji buscado..
         const sortWritingEntries = entries.map((entry) => {
-          const kanjiFilteredList = entry.kanji.filter((kanji) => kanji.writing.includes(writing));
-          entry['kanji'] = kanjiFilteredList;
-          return entry
-        })
-
+          const kanjiFilteredList = entry.kanji.filter((kanji) =>
+            kanji.writing.includes(writing)
+          );
+          return { ...entry._doc, kanji: kanjiFilteredList }; // Asegurarse de conservar todos los campos
+        });
+    
+        const filteredEntriesByLanguage = sortWritingEntries.filter((entry) => {
+          if (!language) return true;
+          return entry.meanings.some((meaning) =>
+            meaning.meaning.some((dictMeaning) => dictMeaning.language === language)
+          );
+        }).map((entry) => {
+          if (!language) return entry;
+          const filteredMeanings = entry.meanings.map((meaning) => {
+            const filteredDictMeanings = meaning.meaning.filter((dictMeaning) => dictMeaning.language === language);
+            return { ...meaning, meaning: filteredDictMeanings };
+          }).filter((meaning) => meaning.meaning.length > 0);
+          return { ...entry, meanings: filteredMeanings };
+        });
+    
+        const toSort = language ? filteredEntriesByLanguage : sortWritingEntries;
+    
         // Ordenar las entradas primero por la longitud de `kanji.writing`
         // y luego por si comienzan con `writing`
-        const sortedEntries = sortWritingEntries.sort((a, b) => {
+        const sortedEntries = toSort.sort((a, b) => {
           const aLength = a.kanji[0].writing.length;
           const bLength = b.kanji[0].writing.length;
-
+    
           if (aLength !== bLength) {
             return aLength - bLength;
           }
-
+    
           const aStartsWith = a.kanji.some((kanji) =>
             kanji.writing.startsWith(writing)
           );
           const bStartsWith = b.kanji.some((kanji) =>
             kanji.writing.startsWith(writing)
           );
-
+    
           if (aStartsWith && !bStartsWith) {
             return -1;
           }
-
+    
           if (!aStartsWith && bStartsWith) {
             return 1;
           }
-
+    
           return 0;
         });
-
-
+    
         return sortedEntries;
       } catch (error) {
         console.error("Error en getEntriesByKanjiWriting:", error);
         throw new Error("Error fetching entries by kanji");
       }
     },
+    
+    
+    
   },
 };
 
