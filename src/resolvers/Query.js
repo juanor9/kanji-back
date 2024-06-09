@@ -100,10 +100,16 @@ const resolvers = {
         if (entries.length === 0) {
           throw new Error("Entries not found");
         }
+        // Encontrar escritura que contenga el kanji buscado..
+        const sortWritingEntries = entries.map((entry) => {
+          const kanjiFilteredList = entry.kanji.filter((kanji) => kanji.writing.includes(writing));
+          entry['kanji'] = kanjiFilteredList;
+          return entry
+        })
 
         // Ordenar las entradas primero por la longitud de `kanji.writing`
         // y luego por si comienzan con `writing`
-        const sortedEntries = entries.sort((a, b) => {
+        const sortedEntries = sortWritingEntries.sort((a, b) => {
           const aLength = a.kanji[0].writing.length;
           const bLength = b.kanji[0].writing.length;
 
@@ -128,6 +134,7 @@ const resolvers = {
 
           return 0;
         });
+
 
         return sortedEntries;
       } catch (error) {
