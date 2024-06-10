@@ -78,6 +78,20 @@ const typeDefs = gql`
     meanings: [Meanings]
   }
 
+  type RadicalEntry {
+    _id: ID
+    id: Int
+    literal: String
+    meaningES: String,
+    strokeNumber: Int,
+    pinyin: String,
+    vietnamese: String,
+    hiragana: String,
+    hangeul: String,
+    meaningEN: String,
+    frequency: Int,
+  }
+
   type Query {
     getCharacterById(id: ID!): Character
     getAllCharacters: [Character]
@@ -87,6 +101,10 @@ const typeDefs = gql`
     getEntryById(id: Int!): Entry
     getAllEntries: [Entry]
     getEntriesByKanjiWriting(writing: String!, language: String): [Entry]
+
+    getRadicalById(id: Int!): RadicalEntry
+    getAllRadicals: [RadicalEntry]
+    getRadicalByLiteral(literal: String): RadicalEntry
   }
 `;
 
