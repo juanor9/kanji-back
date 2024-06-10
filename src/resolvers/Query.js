@@ -1,5 +1,6 @@
 import Character from "../models/Character.js";
 import Entry from "../models/Word.js";
+import Radical from "../models/radicals.js";
 
 const resolvers = {
   Query: {
@@ -161,8 +162,51 @@ const resolvers = {
       }
     },
     
-    
-    
+    // Resolver para obtener todos los radicales
+    getAllRadicals: async () => {
+      try {
+        const radicals = await Radical.find();
+        return radicals;
+      } catch (error) {
+        console.error("Error en getAllRadicals:", error);
+        throw new Error("Error fetching all radicals");
+      }
+    },
+    // Resolver para obtener un radical por id
+    getRadicalById: async (_, { id }) => {
+      try {
+        const filter = {};
+        if (id !== undefined) {
+          filter.id = id;
+        }
+        const radical = await Radical.findOne(filter);
+        if (!radical) {
+          throw new Error("Radical not found");
+        }
+        return radical;
+      } catch (error) {
+        console.error("Error en getRadicalById:", error);
+        throw new Error("Error fetching radical by id");
+      }
+    },
+    // Resolver para obtener un radical por literal
+    getRadicalByLiteral: async (_, { literal }) => {
+      console.log("🚀 ~ getRadicalByLiteral: ~ literal:", literal)
+      try {
+        const filter = {};
+        if (literal !== undefined) {
+          filter.literal = literal;
+        }
+        const radical = await Radical.findOne(filter);
+        if (!radical) {
+          throw new Error("Radical not found");
+        }
+        return radical;
+      } catch (error) {
+        console.error("Error en getRadicalByLiteral:", error);
+        throw new Error("Error fetching radical by literal");
+      }
+    },
   },
 };
 
