@@ -12,6 +12,10 @@ connectDb().then(() => {
   const server = new ApolloServer({
     typeDefs,
     resolvers,
+    cache: 'bounded',
+    persistedQueries: {
+      cache: new Map(),  // Puedes usar una implementación de caché específica aquí
+    },
     formatError: (err) => {
       // Customize error message
       console.error(err);
