@@ -1,6 +1,6 @@
 import Character from "../models/Character.js";
 import Entry from "../models/Word.js";
-import Radical from "../models/radicals.js";
+import Radical from "../models/Radicals.js";
 
 const resolvers = {
   Query: {
